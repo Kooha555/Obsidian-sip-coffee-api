@@ -1,9 +1,11 @@
 import express from "express";
-import orderRoutes from "./orderRoutes.js";
-
+import authRoutes from "./authRoutes.js";
+import { getAllUsers } from "./controllers/authcontroller.js";
 
 const router = express.Router();
 
-router.use("/api/orders", orderRoutes);
+router.get("/users", getAllUsers);
+router.use("/auth", authRoutes);
+
 
 export default router;
