@@ -1,13 +1,12 @@
 import express from "express";
-import dotenv from "dotenv";
 import {
   createOrder,
-  getOrders,
+  getUserOrders,
   getOrderById,
   cancelOrder,
 } from "./controllers/orderController.js";
+import { authUser } from "../middleware/auth.js";
 
-dotenv.config();
 const router = express.Router();
 
 router.get("/", (req, res, next) => {
@@ -23,15 +22,12 @@ router.post("/orders", createOrder);
 // router.post("/orders", authUser, createOrder);
 
 // GET → all orders ของ user
-router.get("/orders", getOrders);
-// router.get("/orders", authUser, getOrders);
+router.get("/orders", authUser, getUserOrders);
 
 // GET → single order
-router.get("/orders/:id", getOrderById);
-// router.get("/orders/:id", authUser, getOrderById);
+router.get("/orders/:id", authUser, getOrderById);
 
 // DELETE → cancel order
-router.delete("/orders/:id", cancelOrder);
-// router.delete("/orders/:id", authUser, cancelOrder);
+router.delete("/orders/:id", authUser, cancelOrder);
 
 export default router;
