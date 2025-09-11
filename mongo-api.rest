@@ -3,11 +3,11 @@ POST http://localhost:3030/auth/register
 Content-Type: application/json
 
 {
-  "firstname": "da",
-  "lastname": "dave2",
-  "email": "da@example.com",
-  "phone": "09999991",
-  "username": "da",
+  "firstname": "test2",
+  "lastname": "test2",
+  "email": "test2@example.com",
+  "phone": "0811111111",
+  "username": "test2",
   "password": "SecurePassword@123"
 
 }
@@ -45,5 +45,6 @@ POST http://localhost:3030/auth/logout
 
 ### Admin User Route - Get all users
 GET http://localhost:3030/users
+
 
 

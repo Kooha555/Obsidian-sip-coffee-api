@@ -1,16 +1,14 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "../../models/User.js";
-import dotenv from "dotenv";
 
-dotenv.config();
 
 
 export const getAllUsers = async (req, res) => {
   try {
     // exclude passwords in the result
     const users = await User.find().select("-password").sort("-createdAt");
-    res.json({ error: false, users });
+    res.json({ error: false, users, message: "User fetched successfully!" });
   } catch (err) {
     res.status(500).json({
       error: true,

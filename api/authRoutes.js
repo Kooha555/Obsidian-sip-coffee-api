@@ -1,5 +1,5 @@
 import express from "express";
-import { authMiddleware, cookieLogin, createAccount, login, logout, profile, verify } from "./controllers/authcontroller.js";
+import { authMiddleware, cookieLogin, createAccount, login, logout, profile, verify } from "./controllers/authController.js";
 import { authUser } from "../middleware/auth.js";
 
 const router = new express.Router();
@@ -17,6 +17,6 @@ router.get("/profile", authUser, profile);
 // Verify token
 router.get("/verify", verify);
 
-router.get("/me", authMiddleware);
+router.get("/me", authUser, authMiddleware);
 
 export default router;
