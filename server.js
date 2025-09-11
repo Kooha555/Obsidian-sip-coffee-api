@@ -1,12 +1,12 @@
+import cookieParser from "cookie-parser";
+import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import helmet from "helmet";
 import apiRoutes from "./api/routes.js";
-import cors from "cors";
-import limiter from "./middleware/rateLimiter.js";
-import cookieParser from "cookie-parser";
 import { connectMongo } from "./config/mongo.js";
 import errorHandler from "./middleware/errorhandler.js";
+import limiter from "./middleware/rateLimiter.js";
 
 dotenv.config();
 
@@ -39,7 +39,7 @@ const PORT = process.env.PORT || 4444;
   try {
     await connectMongo();
     app.listen(PORT, "0.0.0.0", () => {
-      console.log(`Server listening on port ${PORT} ✅`);
+      console.log(`🚀 Server running on port ${PORT}`);
     });
   } catch (err) {
     console.error("❌ Startup error:", err);
