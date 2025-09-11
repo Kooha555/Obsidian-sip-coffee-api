@@ -21,7 +21,6 @@ const corsOptions = {
 
 const app = express();
 
-app.use(errorHandler);
 app.use(limiter);
 app.use(helmet());
 app.use(cors(corsOptions));
@@ -32,6 +31,7 @@ app.use("/", apiRoutes);
 app.get("/", (req, res) => {
   res.send("ObsidianSip");
 });
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 4444;
 
