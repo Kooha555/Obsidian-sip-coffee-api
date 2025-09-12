@@ -17,8 +17,7 @@ export const getProfile = async (req, res) => {
 };
 
 export const updateProfile = async (req, res) => {
-  const { firstname, lastname, email, phone, address } = req.body;
-  // req.user comes from authUser(), .select("-password") is to exclude password retrieval
+  const { firstname, lastname, email, phone, address } = req.body; // req.user comes from authUser(), .select("-password") is to exclude password retrieval
   try {
     const user = await User.findById(req.user._id).select("-password");
     if (!user) {
