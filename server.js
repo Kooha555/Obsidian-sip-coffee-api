@@ -4,6 +4,9 @@ import express from "express";
 import helmet from "helmet";
 import apiRoutes from "./api/routes.js";
 import errorHandler from "./middleware/errorhandler.js";
+import { connectMongo } from "./config/mongo.js";
+import limiter from "./middleware/rateLimiter.js";
+import cors from "cors";
 
 dotenv.config();
 
@@ -31,6 +34,7 @@ app.get("/", (req, res) => {
 });
 
 const PORT = process.env.PORT || 4444;
+await connectMongo();
 app.listen(PORT, () => {
   console.log(`Server running on ${PORT} ✅✅`);
 });
