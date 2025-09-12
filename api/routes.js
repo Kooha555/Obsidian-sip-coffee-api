@@ -1,10 +1,13 @@
 import express from "express";
-import { authRegister } from "./controllers/authController.js";
-import userRoutes from "./userRoutes.js";
+import authRoutes from "./authRoutes.js";
+import { getAllUsers } from "./controllers/authcontroller.js";
+import productsRoutes from "./productRoutes.js";
 
 const router = express.Router();
 
-router.use("/auth/register", authRegister);
+router.use("/products", productsRoutes);
+router.get("/users", getAllUsers);
+router.use("/auth", authRoutes);
 router.use("/profile", userRoutes);
 
 export default router;
