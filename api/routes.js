@@ -8,7 +8,7 @@ import userRoutes from "./userRoutes.js";
 const router = express.Router();
 
 router.use("/products", productsRoutes);
-router.use("/users", getAllUsers);
+router.get("/users", getAllUsers);
 router.use("/auth", authRoutes);
 router.use("/profile", userRoutes);
 router.use("/orders", orderRoutes);
