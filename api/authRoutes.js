@@ -17,6 +17,6 @@ router.get("/profile", authUser, profile);
 // Verify token
 router.get("/verify", verify);
 
-router.get("/me", authMiddleware);
+router.get("/me", authUser, authMiddleware);
 
 export default router;
