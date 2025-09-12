@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "../../models/User.js";
 
+
 export const getAllUsers = async (req, res) => {
   try {
     // exclude passwords in the result
@@ -74,42 +75,7 @@ export const createAccount = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const { username, password } = req.body;
-
-  if (!username || !password) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Email and password are required" });
-  }
-
-  try {
-    const user = await User.findOne({ username });
-    if (!user) {
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid credentials" });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid credentials" });
-    }
-
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "100y",
-    });
-    res.json({ error: false, token, message: "Login successful" });
-  } catch (err) {
-    res
-      .status(500)
-      .json({ error: true, message: "Server error", details: err.message });
-  }
-};
-
-export const cookieLogin = async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, remember } = req.body;
 
   if (!username || !password) {
     return res
@@ -122,20 +88,61 @@ export const cookieLogin = async (req, res) => {
     if (!user) {
       return res
         .status(401)
-        .json({ error: true, message: "Invalid credentials" });
+        .json({ error: true, message: "User not found" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res
         .status(401)
-        .json({ error: true, message: "Invalid credentials" });
+        .json({ error: true, message: "Invalid password" });
     }
 
-    // Generate JWT
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "30d",
-    });
+    const expiresIn = remember ? JWT_EXPIRES_SHORT : JWT_EXPIRES_LONG;
+
+    const token = jwt.sign({ userId: user._id, username: user.username },
+      process.env.JWT_SECRET,
+      {expiresIn}
+    );
+    res.json({ error: false, token, message: "Login successful" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: true, message: "Server error", details: err.message });
+  }
+};
+
+export const cookieLogin = async (req, res) => {
+  const { username, password, remember } = req.body;
+
+  if (!username || !password) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Username and password are required" });
+  }
+
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(401).json({ error: true, message: "User not found" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ error: true, message: "Invalid password" });
+    }
+
+    const JWT_EXPIRES_SHORT = "1h";
+    const JWT_EXPIRES_LONG = "30d";
+    const expiresIn = remember ? JWT_EXPIRES_LONG : JWT_EXPIRES_SHORT;
+
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET is not defined");
+    }
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {expiresIn}
+    );
+
 
     const isProd = process.env.NODE_ENV === "production";
 
@@ -144,10 +151,10 @@ export const cookieLogin = async (req, res) => {
       secure: isProd, // only send over HTTPS in prod
       sameSite: isProd ? "none" : "lax",
       path: "/",
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 day
+      maxAge: remember ? 30 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000,
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       error: false,
       message: "Login successful",
       user: {
@@ -157,6 +164,7 @@ export const cookieLogin = async (req, res) => {
       }, // send some safe public info if needed
     });
   } catch (err) {
+    console.error("❌ Login error:", err);
     res
       .status(500)
       .json({ error: true, message: "Server error", details: err.message });
