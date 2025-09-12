@@ -1,5 +1,6 @@
 import { User } from "../../models/User.js";
 
+// GET User Profile
 export const getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select("-password"); // req.user comes from authUser(), .select("-password") is to exclude password retrieval
@@ -16,6 +17,7 @@ export const getProfile = async (req, res) => {
   }
 };
 
+// UPDATE User Profile
 export const updateProfile = async (req, res) => {
   const { firstname, lastname, email, phone, address } = req.body;
   // req.user comes from authUser(), .select("-password") is to exclude password retrieval
@@ -59,6 +61,7 @@ export const updateProfile = async (req, res) => {
   }
 };
 
+// DELETE User Profile
 export const deleteProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select("-password"); // req.user comes from authUser()
