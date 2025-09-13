@@ -221,7 +221,7 @@ export const MenuItem = [
     desc: "Spiced chai tea blended with steamed milk for a warm comfort.",
     category: "hot",
     price: 95,
-    img: "/https://res.cloudinary.com/dotn0xzuw/image/upload/v1757753388/Hot7_zls3fe.png",
+    img: "https://res.cloudinary.com/dotn0xzuw/image/upload/v1757753388/Hot7_zls3fe.png",
     tag: "Popular",
     inStock: false,
   },
