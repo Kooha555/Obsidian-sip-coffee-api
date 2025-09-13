@@ -74,45 +74,45 @@ export const createAccount = async (req, res) => {
   }
 };
 
+// export const login = async (req, res) => {
+//   const { username, password, remember } = req.body;
+
+//   if (!username || !password) {
+//     return res
+//       .status(400)
+//       .json({ error: true, message: "Username and password are required" });
+//   }
+
+//   try {
+//     const user = await User.findOne({ username });
+//     if (!user) {
+//       return res
+//         .status(401)
+//         .json({ error: true, message: "User not found" });
+//     }
+
+//     const isMatch = await bcrypt.compare(password, user.password);
+//     if (!isMatch) {
+//       return res
+//         .status(401)
+//         .json({ error: true, message: "Invalid password" });
+//     }
+
+//     const expiresIn = remember ? JWT_EXPIRES_SHORT : JWT_EXPIRES_LONG;
+
+//     const token = jwt.sign({ userId: user._id, username: user.username },
+//       process.env.JWT_SECRET,
+//       {expiresIn}
+//     );
+//     res.json({ error: false, token, message: "Login successful" });
+//   } catch (err) {
+//     res
+//       .status(500)
+//       .json({ error: true, message: "Server error", details: err.message });
+//   }
+// };
+
 export const login = async (req, res) => {
-  const { username, password, remember } = req.body;
-
-  if (!username || !password) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Username and password are required" });
-  }
-
-  try {
-    const user = await User.findOne({ username });
-    if (!user) {
-      return res
-        .status(401)
-        .json({ error: true, message: "User not found" });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid password" });
-    }
-
-    const expiresIn = remember ? JWT_EXPIRES_SHORT : JWT_EXPIRES_LONG;
-
-    const token = jwt.sign({ userId: user._id, username: user.username },
-      process.env.JWT_SECRET,
-      {expiresIn}
-    );
-    res.json({ error: false, token, message: "Login successful" });
-  } catch (err) {
-    res
-      .status(500)
-      .json({ error: true, message: "Server error", details: err.message });
-  }
-};
-
-export const cookieLogin = async (req, res) => {
   const { username, password, remember } = req.body;
 
   if (!username || !password) {
@@ -132,35 +132,49 @@ export const cookieLogin = async (req, res) => {
       return res.status(401).json({ error: true, message: "Invalid password" });
     }
 
-    const JWT_EXPIRES_SHORT = "1h";
-    const JWT_EXPIRES_LONG = "30d";
-    const expiresIn = remember ? JWT_EXPIRES_LONG : JWT_EXPIRES_SHORT;
-
-    if (!process.env.JWT_SECRET) {
-      throw new Error("JWT_SECRET is not defined");
-    }
-
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {expiresIn}
-    );
-
+    // Generate Access Token (short-lived)
+    const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
     const isProd = process.env.NODE_ENV === "production";
 
-    res.cookie("accessToken", token, {
+    // Set Access Token as a cookie
+    res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: isProd, // only send over HTTPS in prod
       sameSite: isProd ? "none" : "lax",
       path: "/",
-      maxAge: remember ? 30 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000,
+      maxAge: 60 * 60 * 1000, //1 hour
     });
+
+    // Generate and set Refresh Token ONLY if remember is true
+    if (remember) {
+      const refreshToken = jwt.sign(
+        { userId: user._id },
+        process.env.JWT_REFRESH_SECRET,
+        { expiresIn: "30d" }
+      );
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: isProd,
+        sameSite: isProd ? "none" : "lax",
+        path: "/auth/token", // Set path to the refresh token endpoint
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      });
+    }
 
     return res.status(200).json({
       error: false,
       message: "Login successful",
       user: {
         _id: user._id,
+        firstname: user.firstname,
+        lastname: user.lastname,
         username: user.username,
         email: user.email,
+        phone: user.phone,
+        address: user.address,
       }, // send some safe public info if needed
     });
   } catch (err) {
@@ -179,7 +193,7 @@ export const authMiddleware = async (req, res) => {
 };
 
 export const profile = async (req, res) => {
-  const user = await User.findById(req.user.user._id).select("-password"); // exclude password
+  const user = await User.findById(req.user._id).select("-password"); // exclude password
   if (!user) {
     return res.status(404).json({ error: true, message: "User not found" });
   }
