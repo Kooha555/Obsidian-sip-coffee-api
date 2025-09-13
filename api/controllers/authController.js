@@ -2,7 +2,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "../../models/User.js";
 
-
 export const getAllUsers = async (req, res) => {
   try {
     // exclude passwords in the result
@@ -86,23 +85,20 @@ export const login = async (req, res) => {
   try {
     const user = await User.findOne({ username });
     if (!user) {
-      return res
-        .status(401)
-        .json({ error: true, message: "User not found" });
+      return res.status(401).json({ error: true, message: "User not found" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid password" });
+      return res.status(401).json({ error: true, message: "Invalid password" });
     }
 
     const expiresIn = remember ? JWT_EXPIRES_SHORT : JWT_EXPIRES_LONG;
 
-    const token = jwt.sign({ userId: user._id, username: user.username },
+    const token = jwt.sign(
+      { userId: user._id, username: user.username },
       process.env.JWT_SECRET,
-      {expiresIn}
+      { expiresIn }
     );
     res.json({ error: false, token, message: "Login successful" });
   } catch (err) {
@@ -140,15 +136,15 @@ export const cookieLogin = async (req, res) => {
       throw new Error("JWT_SECRET is not defined");
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {expiresIn}
-    );
-
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn,
+    });
 
     const isProd = process.env.NODE_ENV === "production";
 
     res.cookie("accessToken", token, {
       httpOnly: true,
-      secure: isProd, // only send over HTTPS in prod
+      secure: isProd,
       sameSite: isProd ? "none" : "lax",
       path: "/",
       maxAge: remember ? 30 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000,
@@ -161,7 +157,7 @@ export const cookieLogin = async (req, res) => {
         _id: user._id,
         username: user.username,
         email: user.email,
-      }, // send some safe public info if needed
+      },
     });
   } catch (err) {
     console.error("❌ Login error:", err);
