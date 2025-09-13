@@ -8,10 +8,12 @@ const productSchema = new mongoose.Schema(
     category: String,
     price: Number,
     tag: String,
+    img: String,
     inStock: { type: Boolean, default: true },
     salesCount: { type: Number, default: 0 },
   },
-  { timestamp: true }
+  { timestamps: true }
 );
 
-export const Product = mongoose.model("product", productSchema);
+export const Product =
+  mongoose.models.Product || mongoose.model("Product", productSchema);

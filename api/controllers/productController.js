@@ -44,11 +44,11 @@ export const getProductById = async (req, res) => {
 };
 
 export const createProduct = async (req, res) => {
-  const { id, name, price } = req.body;
-  if (!id || !name || !price) {
+  const { id, name, price, img } = req.body;
+  if (!id || !name || !price || !img) {
     return res
       .status(400)
-      .json({ error: true, message: " Id, name, and price are required" });
+      .json({ error: true, message: "Id, name, price, and img are required" });
   }
   try {
     const product = new Product(req.body);
