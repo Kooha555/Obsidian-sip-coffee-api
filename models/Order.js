@@ -1,5 +1,5 @@
 // /models/Order.js
-import { Schema, model } from "mongoose";
+import { Schema, model, mongoose } from "mongoose";
 
 const OrderSchema = new Schema(
   {
@@ -14,7 +14,7 @@ const OrderSchema = new Schema(
 
     basketItems: [
       {
-        productId: { type: Schema.Types.ObjectId, ref: "Product", required: true }, // อ้างอิง Product
+        productId: { type: mongoose.Schema.Types.ObjectId, ref: "products", required: true }, // อ้างอิง Product
         name: { type: String, required: true },   // snapshot ของชื่อสินค้า
         price: { type: Number, required: true },  // snapshot ของราคาตอนสั่งซื้อ
         quantity: { type: Number, required: true, min: 1 },

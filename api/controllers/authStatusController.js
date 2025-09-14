@@ -28,8 +28,12 @@ export const getAuthStatus = async (req, res) => {
       isLoggedIn: true,
       user: {
         _id: user._id,
-        email: user.email,
+        firstname: user.firstname,
+        lastname: user.lastname,
         username: user.username,
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
       },
     });
   } catch (error) {
