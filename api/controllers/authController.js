@@ -2,7 +2,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "../../models/User.js";
 
-
 export const getAllUsers = async (req, res) => {
   try {
     // exclude passwords in the result
