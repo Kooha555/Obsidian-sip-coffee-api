@@ -15,10 +15,10 @@ const generateOrderNumber = () => {
 export const createOrder = async (req, res) => {
   try {
     // make sure auth middleware provided user
-    if (!req.user?.user?._id) {
+    if (!req.user?._id) {
       return res.status(401).json({ error: true, message: "Not authenticated" });
     }
-    const userId = req.user.user._id;
+    const userId = req.user._id;
     const {
       customerInfo,
       basketItems,
@@ -33,7 +33,7 @@ export const createOrder = async (req, res) => {
     // Improved validation
     if (
       !customerInfo ||
-      !Array.isArray(items) ||
+      !Array.isArray(basketItems) ||
       basketItems.length === 0 ||
       !orderType ||
       subtotal == null ||
@@ -63,7 +63,7 @@ export const createOrder = async (req, res) => {
       customerInfo,
       basketItems,
       orderType,
-      address: orderType === "delivery" ? shippingAddress : "N/A",
+      address: orderType === "delivery" ? address : "N/A",
       subtotal,
       deliveryFee: orderType === "delivery" ? deliveryFee : 0,
       total,
@@ -91,10 +91,10 @@ export const createOrder = async (req, res) => {
 // GET → all orders ของ user
 export const getUserOrders = async (req, res) => {
   try {
-    if (!req.user?.user?._id) {
+    if (!req.user?._id) {
       return res.status(401).json({ error: true, message: "Not authenticated" });
     }
-    const userId = req.user.user._id;
+    const userId = req.user._id;
     const orders = await Order.find({ user: userId }).sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -114,11 +114,11 @@ export const getUserOrders = async (req, res) => {
 // GET → single order
 export const getOrderById = async (req, res) => {
   try {
-    if (!req.user?.user?._id) {
+    if (!req.user?._id) {
       return res.status(401).json({ error: true, message: "Not authenticated" });
     }
     const { orderId } = req.params;
-    const userId = req.user.user._id;
+    const userId = req.user._id;
 
     const order = await Order.findOne({ _id: orderId, user: userId });
 
@@ -146,11 +146,11 @@ export const getOrderById = async (req, res) => {
 // // DELETE → cancel order
 // export const cancelOrder = async (req, res) => {
 //   try {
-//     if (!req.user?.user?._id) {
+//     if (!req.user?._id) {
 //       return res.status(401).json({ error: true, message: "Not authenticated" });
 //     }
 //     const { orderId } = req.params;
-//     const userId = req.user.user._id;
+//     const userId = req.user._id;
 
 //     const order = await Order.findOneAndUpdate(
 //       { _id: orderId, user: userId, status: { $in: ["pending", "processing"] } },
