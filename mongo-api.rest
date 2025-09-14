@@ -47,4 +47,6 @@ POST http://localhost:3030/auth/logout
 GET http://localhost:3030/users
 
 
+### POST Order
+POST http://localhost:3030/
 
