@@ -9,47 +9,7 @@ Content-Type: application/json
   "phone": "0811111111",
   "username": "test2",
   "password": "SecurePassword@123"
-
 }
-
-### User route - Register a new user
-POST http://localhost:3030/orders
-Content-Type: application/json
-Cookie: accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGMyZjRmZjhmYTRjNDE1NzJjNGFhNTkiLCJpYXQiOjE3NTc4NDExMzMsImV4cCI6MTc1Nzg0NDczM30.-rzDBzNLO11OCh-c7XN7cnf3t-IU9p7Kud0eD-CLxg0
-
-{
-  "orderNumber": "ORD-20250914-001",
-  "customerInfo": {
-    "firstName": "John",
-    "lastName": "Doe",
-    "phoneNumber": "0812345678",
-    "email": "john.doe@example.com"
-  },
-  "basketItems": [
-    {
-      "productId": "66ef1234abc4567890d12345",
-      "name": "Hot Cappuccino",
-      "price": 95,
-      "quantity": 2
-    },
-    {
-      "productId": "66ef6789abc4567890d67890",
-      "name": "Hot Mocha",
-      "price": 105,
-      "quantity": 1
-    }
-  ],
-  "orderType": "delivery",
-  "address": "123 Coffee Street, Bangkok",
-  "subtotal": 225,
-  "deliveryFee": 20,
-  "total": 245,
-  "note": "Please deliver before 10 AM",
-  "status": "preparing",
-  "user": "66e5f6a2c0d5a72b3c1e45f0"
-}
-
-
 
 
 ### User route - Login
@@ -87,6 +47,63 @@ POST http://localhost:3030/auth/logout
 GET http://localhost:3030/users
 
 
-### POST Order
-POST http://localhost:3030/
 
+
+
+
+
+
+### Test Order: User route - Login
+POST http://localhost:3030/auth/login
+Content-Type: application/json
+
+{
+  "username": "JSR",
+  "password": "0bsidianSip"
+}
+
+### Order Route - Create Order
+POST http://localhost:3030/orders
+Content-Type: application/json
+Cookie: accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGMzOGUwOTk5YWRlZWFlNjBjOGJmNzIiLCJpYXQiOjE3NTc4NDUwODksImV4cCI6MTc1Nzg0ODY4OX0.RM7RiETFTMrRdIh8ioJJd4YP2C2M9q5FiwTwHFfJm64
+
+{
+  "orderNumber": "ORD-20250914-001",
+  "customerInfo": {
+    "firstName": "JS",
+    "lastName": "SR",
+    "phoneNumber": "0888888888",
+    "email": "john.doe@example.com"
+  },
+  "basketItems": [
+    {
+      "productId": "68c556c77d3e4daf9c2c190e",
+      "name": "Iced Mocha",
+      "price": 1,
+      "quantity": 2
+    },
+    {
+      "productId": "68c556c77d3e4daf9c2c191d",
+      "name": "hot-chai-latte",
+      "price": 95,
+      "quantity": 1
+    }
+  ],
+  "orderType": "delivery",
+  "address": "N/A",
+  "subtotal": 325,
+  "deliveryFee":40,
+  "total": 325,
+  "note": "Please deliver at 11 PM",
+  "status": "preparing",
+  "user": "68c38e0999adeeae60c8bf72"
+}
+
+
+### Order Route - GET → all orders ของ user
+GET http://localhost:3030/orders
+Cookie: accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGMzOGUwOTk5YWRlZWFlNjBjOGJmNzIiLCJpYXQiOjE3NTc4NDk0MzYsImV4cCI6MTc1Nzg1MzAzNn0.wTzxt9jf3iloYvkKhJi4pn6K4TkBMfRtwL_tIw7Ptv0
+
+### Order Route - GET Single Order
+GET http://localhost:3030/orders/68c697f4abb648bf9521ada7
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGMzOGUwOTk5YWRlZWFlNjBjOGJmNzIiLCJpYXQiOjE3NTc4NDUwODksImV4cCI6MTc1Nzg0ODY4OX0.RM7RiETFTMrRdIh8ioJJd4YP2C2M9q5FiwTwHFfJm64
