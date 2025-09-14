@@ -15,6 +15,7 @@ const corsOptions = {
     "http://localhost:5173",
     "http://localhost:5174",
     "http://localhost:5175",
+    "https://obsidian-sip.vercel.app",
   ],
   credentials: true,
 };
@@ -26,6 +27,7 @@ app.use(helmet());
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
+
 
 app.use("/", apiRoutes);
 app.get("/", (req, res) => {
