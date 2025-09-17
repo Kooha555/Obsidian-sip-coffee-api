@@ -9,7 +9,7 @@ import { authUser } from "../middleware/auth.js";
 const router = express.Router();
 
 // POST → create order
-// เรียกใช้ตอนที่ User ยืนยันการสั่งซื้อ (กดปุ่ม "Place Order" ที่หน้า Checkout)
+// เรียกใช้ตอนที่ User ยืนยันการสั่งซื้อ (กดปุ่ม Place Order ที่หน้า Checkout)
 // รับข้อมูล ต่างๆ จาก frontend และ บันทึกเป็น order ใหม่ ลงใน MongoDB
 // Response Status 201 Created และข้อมูล order ที่เพิ่งสร้าง
 router.post("/", authUser, createOrder);
