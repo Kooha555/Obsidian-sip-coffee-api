@@ -160,6 +160,12 @@ export const logout = async (req, res) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: "Strict",
   });
+
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
   res.status(200).json({ message: "Logged out successfully" });
 };
 
