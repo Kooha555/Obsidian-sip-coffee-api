@@ -15,7 +15,7 @@ const corsOptions = {
     "http://localhost:5173",
     "http://localhost:5174",
     "http://localhost:5175",
-    "obsidian-sip-coffee-bakerry.vercel.app",
+    "https://obsidian-sip-coffee-bakerry.vercel.app",
   ],
   credentials: true,
 };
